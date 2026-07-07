@@ -29,7 +29,7 @@ export default function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 w-full px-4 md:px-12 xl:px-24 py-24 md:py-32">
+      <div className="container-fluid relative z-10 py-24 md:py-32" style={{ maxWidth: '1400px', margin: '0 auto', paddingLeft: 'clamp(1rem, 3vw, 3rem)', paddingRight: 'clamp(1rem, 3vw, 3rem)' }}>
         <div className="row align-items-center gy-5">
           {/* Content */}
           <div className="col-12 col-lg-7 pe-lg-5">
