@@ -105,9 +105,9 @@ export default function Footer() {
 
       {/* Links */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+        <div className="row gy-5 gx-4">
           {/* Brand */}
-          <div className="lg:col-span-2">
+          <div className="col-12 col-lg-5">
             <ScrollReveal>
               <Link href="/" className="flex items-center gap-3 mb-6">
                 <div
@@ -183,7 +183,7 @@ export default function Footer() {
 
           {/* Link columns */}
           {Object.entries(footerLinks).map(([title, links], i) => (
-            <ScrollReveal key={title} delay={i * 0.1}>
+            <ScrollReveal key={title} delay={i * 0.1} className="col-6 col-md-4 col-lg-2">
               <h4 className="text-sm font-semibold text-white/90 uppercase tracking-wider mb-6">
                 {title}
               </h4>

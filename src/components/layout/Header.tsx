@@ -14,6 +14,8 @@ import {
   MapPin,
   Clock,
   Mail,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 const navLinks = [
@@ -59,6 +61,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     if (isPortal || isAuth) return;
@@ -66,6 +69,24 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isPortal, isAuth]);
+
+  useEffect(() => {
+    // Check initial theme class
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+  }, []);
+
+  const toggleTheme = () => {
+    if (theme === "light") {
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+      setTheme("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+      setTheme("light");
+    }
+  };
 
   useEffect(() => {
     if (mobileOpen) {
@@ -205,6 +226,14 @@ export default function Header() {
 
             {/* CTA + Mobile menu */}
             <div className="flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 rounded-full hover:bg-neutral-100/50 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
+
               <Link
                 href="/book-appointment"
                 className="hidden md:inline-flex items-center gap-2 btn-primary text-sm"
@@ -301,6 +330,20 @@ export default function Header() {
 
               {/* Mobile CTA */}
               <div className="p-4 border-t border-neutral-100">
+                <button
+                  onClick={toggleTheme}
+                  className="flex items-center justify-center gap-2 w-full mb-3 py-3 rounded-xl border border-neutral-200 text-neutral-800 font-medium text-sm transition-all"
+                >
+                  {theme === "light" ? (
+                    <>
+                      <Moon size={16} /> Dark Mode
+                    </>
+                  ) : (
+                    <>
+                      <Sun size={16} /> Light Mode
+                    </>
+                  )}
+                </button>
                 <Link
                   href="/book-appointment"
                   onClick={() => setMobileOpen(false)}

@@ -8,9 +8,9 @@ export default function IntroSection() {
   return (
     <section className="section-padding bg-white relative">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="row align-items-center gy-5">
           {/* Content */}
-          <div>
+          <div className="col-12 col-lg-6">
             <ScrollReveal>
               <span className="inline-block text-sm font-semibold text-teal-600 tracking-wider uppercase mb-4">
                 Welcome to {CLINIC.shortName}
@@ -35,23 +35,22 @@ export default function IntroSection() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="row g-3">
                 {[
                   { icon: ShieldCheck, label: "VSSC • ISRO Approved" },
                   { icon: Award, label: "Award Winning Clinic" },
                   { icon: Microscope, label: "Advanced Technology" },
                   { icon: Heart, label: "Patient-First Care" },
                 ].map(({ icon: Icon, label }, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-primary-50/50 hover:bg-primary-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center flex-shrink-0">
-                      <Icon size={18} className="text-primary-600" />
+                  <div key={i} className="col-6">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-primary-50/50 hover:bg-primary-50 transition-colors h-full">
+                      <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center flex-shrink-0">
+                        <Icon size={18} className="text-primary-600" />
+                      </div>
+                      <span className="text-sm font-medium text-primary-900">
+                        {label}
+                      </span>
                     </div>
-                    <span className="text-sm font-medium text-primary-900">
-                      {label}
-                    </span>
                   </div>
                 ))}
               </div>
@@ -59,52 +58,54 @@ export default function IntroSection() {
           </div>
 
           {/* Visual */}
-          <ScrollReveal direction="right">
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/5] bg-gradient-to-br from-primary-100 to-teal-50">
-                {/* Placeholder for clinic image */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-white shadow-premium flex items-center justify-center">
-                      <span className="text-5xl">🏥</span>
+          <div className="col-12 col-lg-6">
+            <ScrollReveal direction="right">
+              <div className="relative">
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/5] bg-gradient-to-br from-primary-100 to-teal-50">
+                  {/* Placeholder for clinic image */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center p-8">
+                      <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-white shadow-premium flex items-center justify-center">
+                        <span className="text-5xl">🏥</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-primary-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+                        State-of-the-Art Facility
+                      </h3>
+                      <p className="text-neutral-500 text-sm">
+                        Modern treatment rooms with latest dental technology
+                      </p>
                     </div>
-                    <h3 className="text-xl font-bold text-primary-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
-                      State-of-the-Art Facility
-                    </h3>
-                    <p className="text-neutral-500 text-sm">
-                      Modern treatment rooms with latest dental technology
-                    </p>
                   </div>
                 </div>
-              </div>
 
-              {/* Floating stats card */}
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-premium p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
-                    <Users size={22} className="text-teal-600" />
-                  </div>
-                  <div>
-                    <span className="block text-2xl font-bold text-primary-950">15,000+</span>
-                    <span className="text-xs text-neutral-400">Happy Patients</span>
+                {/* Floating stats card */}
+                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-premium p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+                      <Users size={22} className="text-teal-600" />
+                    </div>
+                    <div>
+                      <span className="block text-2xl font-bold text-primary-950">15,000+</span>
+                      <span className="text-xs text-neutral-400">Happy Patients</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Experience badge */}
-              <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-premium p-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center">
-                    <Clock size={22} className="text-accent-600" />
-                  </div>
-                  <div>
-                    <span className="block text-2xl font-bold text-primary-950">14+</span>
-                    <span className="text-xs text-neutral-400">Years Experience</span>
+                {/* Experience badge */}
+                <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-premium p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center">
+                      <Clock size={22} className="text-accent-600" />
+                    </div>
+                    <div>
+                      <span className="block text-2xl font-bold text-primary-950">14+</span>
+                      <span className="text-xs text-neutral-400">Years Experience</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </div>
         </div>
       </div>
     </section>

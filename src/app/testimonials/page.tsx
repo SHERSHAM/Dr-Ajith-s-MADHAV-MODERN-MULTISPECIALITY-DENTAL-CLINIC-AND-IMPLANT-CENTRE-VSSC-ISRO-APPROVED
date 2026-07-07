@@ -30,7 +30,7 @@ export default function TestimonialsPage() {
             <p className="text-lg text-white/60 max-w-2xl">Real experiences from patients who trusted us with their smiles.</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Rating Summary */}

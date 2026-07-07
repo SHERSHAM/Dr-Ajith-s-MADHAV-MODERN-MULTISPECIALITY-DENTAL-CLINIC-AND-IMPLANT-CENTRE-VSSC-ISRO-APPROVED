@@ -29,10 +29,10 @@ export default function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-24 md:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="relative z-10 w-full px-4 md:px-12 xl:px-24 py-24 md:py-32">
+        <div className="row align-items-center gy-5">
           {/* Content */}
-          <div>
+          <div className="col-12 col-lg-7 pe-lg-5">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -49,7 +49,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white leading-[1.05] tracking-tight mb-6"
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight mb-6"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Where{" "}
@@ -126,9 +126,9 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.9, x: 50 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="hidden lg:block relative"
+            className="col-12 col-lg-5 d-none d-lg-flex justify-content-end relative"
           >
-            <div className="relative w-full aspect-square max-w-lg mx-auto">
+            <div className="relative w-full aspect-square max-w-sm xl:max-w-lg ml-auto">
               {/* Decorative rings */}
               <div className="absolute inset-0 rounded-full border-2 border-white/5 animate-spin-slow" />
               <div className="absolute inset-8 rounded-full border border-white/10 animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "30s" }} />
@@ -177,7 +177,7 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }

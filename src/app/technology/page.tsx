@@ -29,7 +29,7 @@ export default function TechnologyPage() {
             <p className="text-lg text-white/60 max-w-2xl">We invest in the latest technology to provide you with the most accurate, comfortable, and effective treatments.</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white">

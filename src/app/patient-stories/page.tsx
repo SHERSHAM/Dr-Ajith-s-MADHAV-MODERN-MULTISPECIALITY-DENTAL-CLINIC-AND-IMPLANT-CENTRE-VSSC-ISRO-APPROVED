@@ -25,7 +25,7 @@ export default function PatientStoriesPage() {
             <p className="text-lg text-white/60 max-w-2xl">Inspiring stories of transformation from patients who trusted us with their smiles.</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white">

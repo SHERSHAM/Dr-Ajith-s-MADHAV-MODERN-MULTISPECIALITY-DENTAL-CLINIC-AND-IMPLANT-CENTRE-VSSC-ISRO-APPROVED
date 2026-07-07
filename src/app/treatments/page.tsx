@@ -36,7 +36,7 @@ export default function TreatmentsPage() {
             </p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white">
@@ -60,10 +60,10 @@ export default function TreatmentsPage() {
             </div>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.06} key={activeCategory}>
+          <StaggerReveal className="row gy-4" staggerDelay={0.06} key={activeCategory}>
             {filtered.map((treatment) => (
-              <StaggerItem key={treatment.id}>
-                <Link href={`/treatments/${treatment.slug}`}>
+              <StaggerItem key={treatment.id} className="col-12 col-sm-6 col-lg-4">
+                <Link href={`/treatments/${treatment.slug}`} className="block h-full">
                   <motion.div
                     whileHover={{ y: -6 }}
                     className="group bg-white rounded-2xl p-7 border border-neutral-100 hover:border-primary-100 hover:shadow-premium transition-all duration-300 h-full"

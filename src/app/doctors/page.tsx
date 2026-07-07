@@ -31,7 +31,7 @@ export default function DoctorsPage() {
             </p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Founder Spotlight */}
@@ -43,15 +43,17 @@ export default function DoctorsPage() {
                 <div className="absolute top-6 right-6 px-4 py-1.5 rounded-full bg-accent-500 text-white text-sm font-semibold shadow-lg">
                   ★ Founder & Chief Dental Surgeon
                 </div>
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  <div className="relative aspect-[3/4] max-w-sm mx-auto rounded-2xl overflow-hidden bg-white shadow-premium">
-                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-100 to-teal-100">
-                      <div className="w-32 h-32 rounded-full bg-white/80 flex items-center justify-center shadow-lg">
-                        <span className="text-6xl">👨‍⚕️</span>
+                <div className="row align-items-center gy-5">
+                  <div className="col-12 col-lg-6">
+                    <div className="relative aspect-[3/4] max-w-sm mx-auto rounded-2xl overflow-hidden bg-white shadow-premium">
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-100 to-teal-100">
+                        <div className="w-32 h-32 rounded-full bg-white/80 flex items-center justify-center shadow-lg">
+                          <span className="text-6xl">👨‍⚕️</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div className="col-12 col-lg-6">
                     <h2 className="text-3xl md:text-4xl font-bold text-primary-950 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
                       {founder.name}
                     </h2>
@@ -108,10 +110,10 @@ export default function DoctorsPage() {
             </p>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.1}>
+          <StaggerReveal className="row gy-4" staggerDelay={0.1}>
             {others.map((doctor) => (
-              <StaggerItem key={doctor.id}>
-                <motion.div whileHover={{ y: -8 }} className="bg-white rounded-2xl overflow-hidden border border-neutral-100 hover:shadow-premium transition-all duration-300">
+              <StaggerItem key={doctor.id} className="col-12 col-md-6 col-lg-4">
+                <motion.div whileHover={{ y: -8 }} className="bg-white rounded-2xl overflow-hidden border border-neutral-100 hover:shadow-premium transition-all duration-300 h-full">
                   <div className="relative aspect-[4/3] bg-gradient-to-br from-primary-100 to-teal-50 flex items-center justify-center">
                     <div className="w-20 h-20 rounded-full bg-white/80 flex items-center justify-center shadow-lg">
                       <span className="text-4xl">👨‍⚕️</span>

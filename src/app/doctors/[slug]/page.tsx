@@ -27,7 +27,7 @@ export default function DoctorProfilePage({ params }: { params: Promise<{ slug: 
             <p className="text-teal-400 text-xl font-medium">{doctor.title}</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white -mt-12">

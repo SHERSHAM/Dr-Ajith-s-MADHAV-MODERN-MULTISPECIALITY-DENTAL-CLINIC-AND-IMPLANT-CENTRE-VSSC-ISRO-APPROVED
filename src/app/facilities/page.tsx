@@ -29,7 +29,7 @@ export default function FacilitiesPage() {
             <p className="text-lg text-white/60 max-w-2xl">Experience dental care in a modern, comfortable, and safe environment designed for your well-being.</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white">

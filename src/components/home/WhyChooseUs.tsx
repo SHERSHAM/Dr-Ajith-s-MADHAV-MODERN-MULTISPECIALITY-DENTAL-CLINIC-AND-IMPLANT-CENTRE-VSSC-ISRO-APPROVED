@@ -79,14 +79,14 @@ export default function WhyChooseUs() {
         </ScrollReveal>
 
         <StaggerReveal
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="row gy-4"
           staggerDelay={0.08}
         >
           {features.map((feature, i) => (
-            <StaggerItem key={i}>
+            <StaggerItem key={i} className="col-12 col-md-6 col-lg-4">
               <motion.div
                 whileHover={{ y: -6, scale: 1.02 }}
-                className="group p-7 rounded-2xl border border-neutral-100 hover:border-primary-100 bg-white hover:shadow-premium transition-all duration-300"
+                className="group p-7 rounded-2xl border border-neutral-100 hover:border-primary-100 bg-white hover:shadow-premium transition-all duration-300 h-full"
               >
                 <div
                   className={`w-14 h-14 rounded-xl ${feature.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}

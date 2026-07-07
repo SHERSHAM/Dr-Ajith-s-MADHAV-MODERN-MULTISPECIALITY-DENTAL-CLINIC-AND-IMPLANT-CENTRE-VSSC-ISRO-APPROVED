@@ -60,57 +60,63 @@ export default function AboutPage() {
             </p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Story */}
       <section className="section-padding bg-white">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <ScrollReveal>
-              <span className="inline-block text-sm font-semibold text-teal-600 tracking-wider uppercase mb-4">Our Journey</span>
-              <h2 className="section-heading text-primary-950 mb-6" style={{ fontFamily: "var(--font-heading)" }}>
-                A Legacy of <span className="gradient-text">Dental Excellence</span>
-              </h2>
-              <p className="text-neutral-500 text-lg leading-relaxed mb-6">
-                What began as a small dental practice in 2012 has grown into one of
-                Thiruvananthapuram&apos;s most trusted and advanced multi-speciality dental
-                clinics. Dr. Ajith Madhav&apos;s relentless pursuit of excellence and
-                innovation has been the driving force behind this transformation.
-              </p>
-              <p className="text-neutral-500 leading-relaxed mb-8">
-                Today, we house a team of highly specialized dentists, the latest
-                dental technology, and a warm, welcoming environment where every
-                patient feels valued. Our VSSC • ISRO approval stands as a testament
-                to our commitment to quality and safety.
-              </p>
-              <div className="grid grid-cols-3 gap-6">
-                {[
-                  { value: 14, suffix: "+", label: "Years" },
-                  { value: 15000, suffix: "+", label: "Patients" },
-                  { value: 25000, suffix: "+", label: "Procedures" },
-                ].map((stat, i) => (
-                  <div key={i} className="text-center p-4 rounded-xl bg-primary-50/50">
-                    <div className="text-2xl font-bold text-primary-900" style={{ fontFamily: "var(--font-heading)" }}>
-                      <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+          <div className="row align-items-center gy-5">
+            <div className="col-12 col-lg-6">
+              <ScrollReveal>
+                <span className="inline-block text-sm font-semibold text-teal-600 tracking-wider uppercase mb-4">Our Journey</span>
+                <h2 className="section-heading text-primary-950 mb-6" style={{ fontFamily: "var(--font-heading)" }}>
+                  A Legacy of <span className="gradient-text">Dental Excellence</span>
+                </h2>
+                <p className="text-neutral-500 text-lg leading-relaxed mb-6">
+                  What began as a small dental practice in 2012 has grown into one of
+                  Thiruvananthapuram&apos;s most trusted and advanced multi-speciality dental
+                  clinics. Dr. Ajith Madhav&apos;s relentless pursuit of excellence and
+                  innovation has been the driving force behind this transformation.
+                </p>
+                <p className="text-neutral-500 leading-relaxed mb-8">
+                  Today, we house a team of highly specialized dentists, the latest
+                  dental technology, and a warm, welcoming environment where every
+                  patient feels valued. Our VSSC • ISRO approval stands as a testament
+                  to our commitment to quality and safety.
+                </p>
+                <div className="row g-3">
+                  {[
+                    { value: 14, suffix: "+", label: "Years" },
+                    { value: 15000, suffix: "+", label: "Patients" },
+                    { value: 25000, suffix: "+", label: "Procedures" },
+                  ].map((stat, i) => (
+                    <div key={i} className="col-4">
+                      <div className="text-center p-4 rounded-xl bg-primary-50/50 h-full">
+                        <div className="text-2xl font-bold text-primary-900" style={{ fontFamily: "var(--font-heading)" }}>
+                          <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+                        </div>
+                        <p className="text-xs text-neutral-500 mt-1">{stat.label}</p>
+                      </div>
                     </div>
-                    <p className="text-xs text-neutral-500 mt-1">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal direction="right">
-              <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary-100 to-teal-50 flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-white shadow-premium flex items-center justify-center">
-                    <span className="text-5xl">🏥</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-primary-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>Our Clinic</h3>
-                  <p className="text-neutral-500 text-sm">Modern, comfortable, world-class</p>
+                  ))}
                 </div>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+            </div>
+
+            <div className="col-12 col-lg-6">
+              <ScrollReveal direction="right">
+                <div className="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-primary-100 to-teal-50 flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-white shadow-premium flex items-center justify-center">
+                      <span className="text-5xl">🏥</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-primary-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>Our Clinic</h3>
+                    <p className="text-neutral-500 text-sm">Modern, comfortable, world-class</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
         </div>
       </section>
@@ -118,8 +124,8 @@ export default function AboutPage() {
       {/* Vision & Mission */}
       <section className="section-padding bg-neutral-50/50">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-2 gap-8">
-            <ScrollReveal>
+          <div className="row gy-4">
+            <ScrollReveal className="col-12 col-md-6">
               <div className="bg-white p-8 md:p-10 rounded-3xl border border-neutral-100 shadow-premium h-full">
                 <div className="w-14 h-14 rounded-xl bg-primary-50 flex items-center justify-center mb-6">
                   <Eye size={28} className="text-primary-600" />
@@ -134,7 +140,7 @@ export default function AboutPage() {
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.15}>
+            <ScrollReveal delay={0.15} className="col-12 col-md-6">
               <div className="bg-white p-8 md:p-10 rounded-3xl border border-neutral-100 shadow-premium h-full">
                 <div className="w-14 h-14 rounded-xl bg-teal-50 flex items-center justify-center mb-6">
                   <Target size={28} className="text-teal-600" />
@@ -162,10 +168,10 @@ export default function AboutPage() {
             </h2>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.08}>
+          <StaggerReveal className="row gy-4" staggerDelay={0.08}>
             {values.map((value, i) => (
-              <StaggerItem key={i}>
-                <motion.div whileHover={{ y: -4 }} className="p-7 rounded-2xl border border-neutral-100 hover:border-primary-100 hover:shadow-lg transition-all">
+              <StaggerItem key={i} className="col-12 col-md-6 col-lg-4">
+                <motion.div whileHover={{ y: -4 }} className="p-7 rounded-2xl border border-neutral-100 hover:border-primary-100 hover:shadow-lg transition-all h-full">
                   <value.icon size={24} className="text-primary-600 mb-4" />
                   <h4 className="font-bold text-primary-950 text-lg mb-2" style={{ fontFamily: "var(--font-heading)" }}>{value.title}</h4>
                   <p className="text-neutral-500 text-sm leading-relaxed">{value.desc}</p>

@@ -50,12 +50,12 @@ export default function TreatmentsOverview() {
         </ScrollReveal>
 
         <StaggerReveal
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          className="row gy-4"
           staggerDelay={0.06}
         >
           {featured.map((treatment) => (
-            <StaggerItem key={treatment.id}>
-              <Link href={`/treatments/${treatment.slug}`}>
+            <StaggerItem key={treatment.id} className="col-12 col-sm-6 col-lg-3">
+              <Link href={`/treatments/${treatment.slug}`} className="block h-full">
                 <motion.div
                   whileHover={{ y: -6 }}
                   className="group bg-white rounded-2xl p-6 border border-neutral-100 hover:border-primary-100 hover:shadow-premium transition-all duration-300 h-full"

@@ -29,13 +29,13 @@ export default function FeaturedDoctors() {
           </p>
         </ScrollReveal>
 
-        <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
+        <StaggerReveal className="row gy-4" staggerDelay={0.1}>
           {featured.map((doctor) => (
-            <StaggerItem key={doctor.id}>
-              <Link href={`/doctors/${doctor.slug}`}>
+            <StaggerItem key={doctor.id} className="col-12 col-md-6 col-lg-3">
+              <Link href={`/doctors/${doctor.slug}`} className="block h-full">
                 <motion.div
                   whileHover={{ y: -8 }}
-                  className="group card-premium p-1"
+                  className="group card-premium p-1 h-full"
                 >
                   {/* Photo area */}
                   <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-gradient-to-br from-primary-100 to-teal-50 mb-4">

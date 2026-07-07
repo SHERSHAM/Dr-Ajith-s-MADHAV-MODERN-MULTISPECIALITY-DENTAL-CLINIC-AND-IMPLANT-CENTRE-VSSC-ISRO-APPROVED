@@ -28,7 +28,7 @@ export default function BlogPage() {
             <p className="text-lg text-white/60 max-w-2xl">Expert dental health tips, treatment guides, and clinic news from our team.</p>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="section-padding bg-white">
