@@ -6,7 +6,7 @@ import { Award, Heart, Microscope, ShieldCheck, Clock, Users } from "lucide-reac
 
 export default function IntroSection() {
   return (
-    <section className="section-padding bg-white relative">
+    <section className="section-padding bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="row align-items-center gy-5">
           {/* Content */}
@@ -79,7 +79,7 @@ export default function IntroSection() {
                 </div>
 
                 {/* Floating stats card */}
-                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-premium p-5">
+                <div className="absolute -bottom-6 -left-2 lg:-left-6 bg-white rounded-2xl shadow-premium p-5">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
                       <Users size={22} className="text-teal-600" />
@@ -92,7 +92,7 @@ export default function IntroSection() {
                 </div>
 
                 {/* Experience badge */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-premium p-5">
+                <div className="absolute -top-4 -right-2 lg:-right-4 bg-white rounded-2xl shadow-premium p-5">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center">
                       <Clock size={22} className="text-accent-600" />
