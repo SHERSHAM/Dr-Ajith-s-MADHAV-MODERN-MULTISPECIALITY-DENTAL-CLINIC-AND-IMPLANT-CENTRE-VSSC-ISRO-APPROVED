@@ -79,27 +79,27 @@ export default function IntroSection() {
                 </div>
 
                 {/* Floating stats card */}
-                <div className="absolute -bottom-6 -left-2 lg:-left-6 bg-white rounded-2xl shadow-premium p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
-                      <Users size={22} className="text-teal-600" />
+                <div className="absolute -bottom-6 -left-2 lg:-left-6 bg-white dark:bg-slate-900 rounded-xl md:rounded-2xl shadow-premium border border-neutral-100/50 dark:border-slate-800/80 p-2.5 md:p-4 lg:p-5">
+                  <div className="flex items-center gap-1.5 md:gap-3">
+                    <div className="w-8 h-8 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg md:rounded-xl bg-teal-50 dark:bg-teal-950/30 flex items-center justify-center flex-shrink-0">
+                      <Users className="w-4 h-4 md:w-5.5 md:h-5.5 lg:w-6 lg:h-6 text-teal-600 dark:text-teal-400" />
                     </div>
                     <div>
-                      <span className="block text-2xl font-bold text-primary-950">15,000+</span>
-                      <span className="text-xs text-neutral-400">Happy Patients</span>
+                      <span className="block text-sm md:text-xl lg:text-2xl font-bold text-primary-950 dark:text-white leading-tight">15,000+</span>
+                      <span className="text-[9px] md:text-xs text-neutral-400 dark:text-slate-400 font-medium">Happy Patients</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Experience badge */}
-                <div className="absolute -top-4 -right-2 lg:-right-4 bg-white rounded-2xl shadow-premium p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center">
-                      <Clock size={22} className="text-accent-600" />
+                <div className="absolute -top-4 -right-2 lg:-right-4 bg-white dark:bg-slate-900 rounded-xl md:rounded-2xl shadow-premium border border-neutral-100/50 dark:border-slate-800/80 p-2.5 md:p-4 lg:p-5">
+                  <div className="flex items-center gap-1.5 md:gap-3">
+                    <div className="w-8 h-8 md:w-11 md:h-11 lg:w-12 lg:h-12 rounded-lg md:rounded-xl bg-accent-50 dark:bg-accent-950/30 flex items-center justify-center flex-shrink-0">
+                      <Clock className="w-4 h-4 md:w-5.5 md:h-5.5 lg:w-6 lg:h-6 text-accent-600 dark:text-accent-400" />
                     </div>
                     <div>
-                      <span className="block text-2xl font-bold text-primary-950">14+</span>
-                      <span className="text-xs text-neutral-400">Years Experience</span>
+                      <span className="block text-sm md:text-xl lg:text-2xl font-bold text-primary-950 dark:text-white leading-tight">14+</span>
+                      <span className="text-[9px] md:text-xs text-neutral-400 dark:text-slate-400 font-medium">Years Experience</span>
                     </div>
                   </div>
                 </div>
