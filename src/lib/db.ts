@@ -1,14 +1,17 @@
 import { PrismaClient } from "../generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import path from "path";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-// Locate SQLite file correctly relative to the project root
-const dbPath = path.join(process.cwd(), "prisma", "dev.db");
+const connectionString = process.env.DATABASE_URL;
 
-// Instantiate driver adapter directly in Prisma 7
-const adapter = new PrismaBetterSqlite3({
-  url: dbPath,
+const pool = new Pool({
+  connectionString,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
+
+const adapter = new PrismaPg(pool);
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
