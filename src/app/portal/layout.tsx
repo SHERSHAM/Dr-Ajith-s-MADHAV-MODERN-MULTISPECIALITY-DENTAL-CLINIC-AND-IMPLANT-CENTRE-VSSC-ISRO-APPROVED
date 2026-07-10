@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,10 +41,44 @@ const sidebarLinks = [
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleLogout = () => {
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((data) => {
+        if (data.user) setUser(data.user);
+      })
+      .catch((err) => {
+        console.error(err);
+        window.location.href = "/login";
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error(err);
+    }
     window.location.href = "/login";
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  const userInitials = user && user.name ? user.name[0].toUpperCase() : "J";
+  const userPatientId = user ? `#MD-${user.id.slice(0, 4).toUpperCase()}` : "#MD-1402";
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row">
@@ -190,11 +224,11 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
             </Link>
             <div className="flex items-center gap-3 border-l border-slate-100 pl-6">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-400 to-teal-400 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                J
+                {userInitials}
               </div>
               <div>
-                <span className="block text-sm font-semibold text-slate-800 leading-tight">John Doe</span>
-                <span className="text-[10px] font-medium text-slate-400">Patient ID: #MD-1402</span>
+                <span className="block text-sm font-semibold text-slate-800 leading-tight">{user ? user.name : "Loading..."}</span>
+                <span className="text-[10px] font-medium text-slate-400">Patient ID: {userPatientId}</span>
               </div>
             </div>
           </div>

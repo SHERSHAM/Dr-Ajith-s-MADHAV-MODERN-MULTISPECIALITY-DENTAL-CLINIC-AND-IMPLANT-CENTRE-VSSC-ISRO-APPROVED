@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Clock, Video, FileText, CheckCircle2, AlertCircle, RefreshCw, XCircle } from "lucide-react";
 import Link from "next/link";
@@ -8,59 +8,58 @@ import Link from "next/link";
 export default function PortalAppointments() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const upcomingAppointments = [
-    {
-      id: "apt-101",
-      doctor: "Dr. Ajith Madhav",
-      title: "Chief Surgeon • Prosthodontist",
-      treatment: "Dental Implants (Abutment Fitting)",
-      date: "July 12, 2026",
-      time: "10:30 AM",
-      status: "Confirmed",
-      type: "In-Person Clinic Visit",
-    },
-    {
-      id: "apt-102",
-      doctor: "Dr. Priya Nair",
-      title: "Senior Orthodontist",
-      treatment: "Invisalign Progress Check",
-      date: "August 5, 2026",
-      time: "3:00 PM",
-      status: "Confirmed",
-      type: "In-Person Clinic Visit",
-    },
-  ];
+  const fetchAppointments = async () => {
+    try {
+      const res = await fetch("/api/appointments");
+      const data = await res.json();
+      if (data.appointments) {
+        setAppointments(data.appointments);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const pastAppointments = [
-    {
-      id: "apt-99",
-      doctor: "Dr. Ajith Madhav",
-      title: "Chief Surgeon",
-      treatment: "Dental Implant Consultation & 3D scan",
-      date: "June 10, 2026",
-      time: "11:00 AM",
-      status: "Completed",
-      type: "In-Person Clinic Visit",
-    },
-    {
-      id: "apt-98",
-      doctor: "Dr. Lakshmi Menon",
-      title: "Gum Specialist",
-      treatment: "Laser Gum Scaling & Deep Cleanse",
-      date: "April 15, 2026",
-      time: "2:30 PM",
-      status: "Completed",
-      type: "In-Person Clinic Visit",
-    },
-  ];
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
-  const handleCancelApt = (id: string) => {
+  // Filter dynamic appointments
+  const upcomingAppointments = appointments.filter((apt) => {
+    const isPastDate = new Date(apt.date) < new Date(new Date().setHours(0,0,0,0));
+    return apt.status !== "CANCELLED" && apt.status !== "COMPLETED" && !isPastDate;
+  });
+
+  const pastAppointments = appointments.filter((apt) => {
+    const isPastDate = new Date(apt.date) < new Date(new Date().setHours(0,0,0,0));
+    return apt.status === "CANCELLED" || apt.status === "COMPLETED" || isPastDate;
+  });
+
+  const handleCancelApt = async (id: string) => {
     setCancellingId(id);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: "CANCELLED" }),
+      });
+      if (res.ok) {
+        await fetchAppointments();
+        alert("Appointment cancelled successfully.");
+      } else {
+        alert("Failed to cancel appointment. Please contact support.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error occurred. Please try again.");
+    } finally {
       setCancellingId(null);
-      alert("Appointment cancellation request sent to the front desk. You will receive a WhatsApp confirmation shortly.");
-    }, 1500);
+    }
   };
 
   return (
@@ -107,51 +106,79 @@ export default function PortalAppointments() {
 
       {/* List container */}
       <div className="space-y-4">
-        {activeTab === "upcoming" ? (
-          upcomingAppointments.map((apt) => (
-            <motion.div
-              key={apt.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6"
-            >
-              <div className="space-y-4 flex-1">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-600 flex items-center gap-1.5 w-fit">
-                    <Calendar size={12} /> {apt.date}
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-600 flex items-center gap-1.5 w-fit">
-                    <Clock size={12} /> {apt.time}
-                  </span>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 w-fit">
-                    <CheckCircle2 size={12} /> {apt.status}
-                  </span>
+        {loading ? (
+          <div className="text-center py-10">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent mx-auto" />
+            <p className="text-xs text-slate-450 mt-2">Loading appointments...</p>
+          </div>
+        ) : activeTab === "upcoming" ? (
+          upcomingAppointments.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
+              <span className="text-4xl block mb-2">🗓️</span>
+              <h4 className="font-bold text-slate-800 text-sm">No Upcoming Appointments</h4>
+              <p className="text-xs text-slate-400 mt-1 mb-4">You don't have any upcoming visits scheduled.</p>
+              <Link href="/portal/appointments" className="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-semibold shadow transition-all inline-block">
+                Schedule One Now
+              </Link>
+            </div>
+          ) : (
+            upcomingAppointments.map((apt) => (
+              <motion.div
+                key={apt.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6"
+              >
+                <div className="space-y-4 flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-600 flex items-center gap-1.5 w-fit">
+                      <Calendar size={12} /> {new Date(apt.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-600 flex items-center gap-1.5 w-fit">
+                      <Clock size={12} /> {apt.time}
+                    </span>
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold w-fit ${
+                      apt.status === "CONFIRMED" 
+                        ? "bg-green-50 text-green-700" 
+                        : apt.status === "PENDING"
+                        ? "bg-yellow-50 text-yellow-700"
+                        : "bg-slate-100 text-slate-700"
+                    }`}>
+                      <CheckCircle2 size={12} /> {apt.status.charAt(0) + apt.status.slice(1).toLowerCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800">{apt.doctorName}</h4>
+                    <p className="text-xs text-slate-400 mb-2">Chief Specialist • MD</p>
+                    <p className="text-sm font-semibold text-primary-600">{apt.reason || "Routine Checkup"}</p>
+                    <p className="text-xs text-slate-500 mt-1">In-Person Clinic Visit</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-800">{apt.doctor}</h4>
-                  <p className="text-xs text-slate-400 mb-2">{apt.title}</p>
-                  <p className="text-sm font-semibold text-primary-600">{apt.treatment}</p>
-                  <p className="text-xs text-slate-500 mt-1">{apt.type}</p>
-                </div>
-              </div>
 
-              <div className="flex md:flex-col gap-2 flex-wrap">
-                <button
-                  onClick={() => alert("Reschedule module opening...")}
-                  className="flex-1 md:w-32 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <RefreshCw size={12} /> Reschedule
-                </button>
-                <button
-                  onClick={() => handleCancelApt(apt.id)}
-                  disabled={cancellingId === apt.id}
-                  className="flex-1 md:w-32 px-4 py-2.5 rounded-xl border border-rose-100 text-rose-500 text-xs font-semibold hover:bg-rose-50/50 transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <XCircle size={12} /> {cancellingId === apt.id ? "Processing..." : "Cancel Visit"}
-                </button>
-              </div>
-            </motion.div>
-          ))
+                <div className="flex md:flex-col gap-2 flex-wrap">
+                  <button
+                    onClick={() => alert("Reschedule module opening...")}
+                    className="flex-1 md:w-32 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <RefreshCw size={12} /> Reschedule
+                  </button>
+                  <button
+                    onClick={() => handleCancelApt(apt.id)}
+                    disabled={cancellingId === apt.id}
+                    className="flex-1 md:w-32 px-4 py-2.5 rounded-xl border border-rose-100 text-rose-500 text-xs font-semibold hover:bg-rose-50/50 transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <XCircle size={12} /> {cancellingId === apt.id ? "Processing..." : "Cancel Visit"}
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          )
+        ) : pastAppointments.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
+            <span className="text-4xl block mb-2">📜</span>
+            <h4 className="font-bold text-slate-800 text-sm">No Past Visits</h4>
+            <p className="text-xs text-slate-400 mt-1">You have no records of completed appointments.</p>
+          </div>
         ) : (
           pastAppointments.map((apt) => (
             <motion.div
@@ -163,20 +190,24 @@ export default function PortalAppointments() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                    <Calendar size={12} /> {apt.date}
+                    <Calendar size={12} /> {new Date(apt.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </span>
                   <span className="px-3 py-1 rounded-full bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-500 flex items-center gap-1.5">
                     <Clock size={12} /> {apt.time}
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-                    <CheckCircle2 size={12} /> {apt.status}
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                    apt.status === "COMPLETED" 
+                      ? "bg-slate-100 text-slate-600" 
+                      : "bg-red-50 text-red-700"
+                  }`}>
+                    <CheckCircle2 size={12} /> {apt.status.charAt(0) + apt.status.slice(1).toLowerCase()}
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-700">{apt.doctor}</h4>
-                  <p className="text-xs text-slate-400 mb-2">{apt.title}</p>
-                  <p className="text-sm font-semibold text-slate-600">{apt.treatment}</p>
-                  <p className="text-xs text-slate-400 mt-1">{apt.type}</p>
+                  <h4 className="font-bold text-slate-700">{apt.doctorName}</h4>
+                  <p className="text-xs text-slate-400 mb-2">Chief Specialist • MD</p>
+                  <p className="text-sm font-semibold text-slate-600">{apt.reason || "Routine Checkup"}</p>
+                  <p className="text-xs text-slate-400 mt-1">In-Person Clinic Visit</p>
                 </div>
               </div>
 

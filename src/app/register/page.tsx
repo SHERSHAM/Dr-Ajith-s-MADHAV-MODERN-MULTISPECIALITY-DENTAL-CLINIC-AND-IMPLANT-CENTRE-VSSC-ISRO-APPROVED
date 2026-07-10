@@ -9,14 +9,41 @@ import FloatingParticles from "@/components/animations/FloatingParticles";
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to create account");
+      }
+
       window.location.href = "/portal/dashboard";
-    }, 1500);
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,6 +69,12 @@ export default function RegisterPage() {
         <p className="text-white/60 text-sm mb-8">Register as a patient to access the portal</p>
 
         <form onSubmit={handleSubmit} className="text-left space-y-4">
+          {error && (
+            <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-xs text-center font-medium leading-relaxed mb-4">
+              ⚠️ {error}
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-semibold tracking-wider uppercase text-white/60 mb-2">Full Name</label>
             <div className="relative">
@@ -96,6 +129,21 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                className="w-full pl-12 pr-4 py-3 bg-white/5 hover:bg-white/10 focus:bg-white/10 rounded-xl border border-white/10 focus:border-white/30 outline-none text-sm transition-all"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold tracking-wider uppercase text-white/60 mb-2">Confirm Password</label>
+            <div className="relative">
+              <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" />
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
                 className="w-full pl-12 pr-4 py-3 bg-white/5 hover:bg-white/10 focus:bg-white/10 rounded-xl border border-white/10 focus:border-white/30 outline-none text-sm transition-all"
               />

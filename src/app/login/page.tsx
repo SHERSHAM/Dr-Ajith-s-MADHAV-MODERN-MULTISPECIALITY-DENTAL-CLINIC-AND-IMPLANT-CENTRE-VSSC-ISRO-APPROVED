@@ -11,19 +11,42 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "", phone: "", otp: "" });
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
-    // Mock login flow
-    setTimeout(() => {
-      setLoading(false);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone,
+          otp: formData.otp,
+          method: loginMethod,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
       window.location.href = "/portal/dashboard";
-    }, 1500);
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSendOtp = () => {
     if (!formData.phone) return;
+    setError(null);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -75,6 +98,11 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="text-left space-y-5">
+          {error && (
+            <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-xs text-center font-medium leading-relaxed mb-4">
+              ⚠️ {error}
+            </div>
+          )}
           {loginMethod === "email" ? (
             <>
               <div>

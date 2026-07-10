@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/animations/ScrollReveal";
 import { TREATMENTS } from "@/data/treatments";
@@ -22,14 +22,67 @@ export default function BookAppointmentPage() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", notes: "" });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          setIsLoggedIn(true);
+          setFormData({
+            name: data.user.name,
+            email: data.user.email,
+            phone: data.user.phone || "",
+            notes: ""
+          });
+        }
+      })
+      .catch((err) => console.log("Guest mode booking ready"));
+  }, []);
 
   const canProceed = () => {
     switch (step) {
       case 0: return !!selectedTreatment;
       case 1: return !!selectedDoctor;
       case 2: return !!selectedDate && !!selectedTime;
-      case 3: return !!formData.name && !!formData.phone;
+      case 3: return !!formData.name && !!formData.phone && !!formData.email;
       default: return false;
+    }
+  };
+
+  const handleConfirmBooking = async () => {
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          doctorId: selectedDoctor,
+          doctorName: DOCTORS.find((d) => d.id === selectedDoctor)?.name || "Specialist",
+          date: selectedDate,
+          time: selectedTime,
+          reason: TREATMENTS.find((t) => t.id === selectedTreatment)?.name || selectedTreatment,
+          notes: formData.notes,
+          guestDetails: isLoggedIn ? undefined : {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone
+          }
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to schedule appointment");
+      }
+
+      setStep(4);
+    } catch (err: any) {
+      alert(err.message || "An unexpected error occurred during scheduling.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -218,16 +271,22 @@ export default function BookAppointmentPage() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setStep(step + 1)}
-                disabled={!canProceed()}
+                onClick={() => {
+                  if (step === 3) {
+                    handleConfirmBooking();
+                  } else {
+                    setStep(step + 1);
+                  }
+                }}
+                disabled={!canProceed() || submitting}
                 className={`flex items-center gap-2 px-8 py-3 rounded-full font-semibold text-sm transition-all ${
-                  canProceed()
+                  canProceed() && !submitting
                     ? "text-white shadow-lg hover:shadow-xl"
                     : "bg-neutral-200 text-neutral-400 cursor-not-allowed"
                 }`}
-                style={canProceed() ? { background: "linear-gradient(135deg, #1e2a8a 0%, #3b63f7 100%)" } : {}}
+                style={canProceed() && !submitting ? { background: "linear-gradient(135deg, #1e2a8a 0%, #3b63f7 100%)" } : {}}
               >
-                {step === 3 ? "Confirm Booking" : "Continue"} <ArrowRight size={16} />
+                {submitting ? "Booking..." : step === 3 ? "Confirm Booking" : "Continue"} <ArrowRight size={16} />
               </motion.button>
             </div>
           )}

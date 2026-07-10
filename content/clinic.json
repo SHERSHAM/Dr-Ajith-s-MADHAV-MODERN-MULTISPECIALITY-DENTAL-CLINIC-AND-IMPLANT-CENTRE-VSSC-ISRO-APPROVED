@@ -1,0 +1,10 @@
+{
+  "name": "Dr Ajith's MADHAV MODERN MULTISPECIALITY DENTAL CLINIC",
+  "shortName": "Madhav Dental",
+  "phone": "+919567400562",
+  "email": "info@madhavdental.com",
+  "hours": {
+    "weekdays": "9:00 AM – 9:00 PM",
+    "sunday": "9:00 AM – 1:00 PM"
+  }
+}

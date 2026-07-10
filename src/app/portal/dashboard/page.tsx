@@ -17,17 +17,63 @@ import {
 } from "lucide-react";
 
 export default function PortalDashboard() {
-  const [isPaid, setIsPaid] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const paid = localStorage.getItem("implant_invoice_paid") === "true";
-    setIsPaid(paid);
+    const loadData = async () => {
+      try {
+        const [meRes, appRes] = await Promise.all([
+          fetch("/api/auth/me").then((res) => res.json()),
+          fetch("/api/appointments").then((res) => res.json()),
+        ]);
+
+        if (meRes.user) setUser(meRes.user);
+        if (appRes.appointments) setAppointments(appRes.appointments);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  // Calculate upcoming appointment details
+  const upcomingAppointments = appointments
+    .filter((app) => app.status === "PENDING" || app.status === "CONFIRMED")
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const nextApp = upcomingAppointments[0];
+  const nextAppDateStr = nextApp 
+    ? `${new Date(nextApp.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}, ${nextApp.time}`
+    : "No Appointments";
+
+  // Sum unpaid invoices
+  let totalDue = 0;
+  appointments.forEach((app) => {
+    if (app.invoices) {
+      app.invoices.forEach((inv: any) => {
+        if (inv.status === "UNPAID") {
+          totalDue += inv.amount;
+        }
+      });
+    }
+  });
+
   const stats = [
-    { label: "Next Appointment", value: "July 12, 10:30 AM", icon: Calendar, color: "text-primary-600 bg-primary-50" },
+    { label: "Next Appointment", value: nextAppDateStr, icon: Calendar, color: "text-primary-600 bg-primary-50" },
     { label: "Active Prescriptions", value: "2 Medicines", icon: FileText, color: "text-teal-600 bg-teal-50" },
-    { label: "Pending Invoices", value: isPaid ? "₹0 Due" : "₹2,500 Due", icon: Receipt, color: "text-accent-600 bg-accent-50" },
+    { label: "Pending Invoices", value: `₹${totalDue.toLocaleString()} Due`, icon: Receipt, color: "text-accent-600 bg-accent-50" },
   ];
 
   return (
@@ -42,10 +88,12 @@ export default function PortalDashboard() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
         <div className="relative z-10 space-y-2">
           <h1 className="text-2xl md:text-3xl font-bold font-heading" style={{ fontFamily: "var(--font-heading)" }}>
-            Welcome back, John!
+            Welcome back, {user ? user.name.split(" ")[0] : "John"}!
           </h1>
           <p className="text-white/70 max-w-md text-sm md:text-base leading-relaxed">
-            Your smile check-up is scheduled in 6 days. Keep your smile bright and healthy!
+            {nextApp 
+              ? `Your next appointment is scheduled for ${nextAppDateStr} with ${nextApp.doctorName}.`
+              : "No upcoming appointments. Keep your smile bright and healthy!"}
           </p>
         </div>
       </motion.div>
@@ -88,56 +136,73 @@ export default function PortalDashboard() {
             </Link>
           </div>
 
-          <motion.div
-            whileHover={{ y: -2 }}
-            className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6"
-          >
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-50">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-100 to-teal-50 flex items-center justify-center text-2xl flex-shrink-0">
-                  👨‍⚕️
+          {nextApp ? (
+            <motion.div
+              whileHover={{ y: -2 }}
+              className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-50">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-100 to-teal-50 flex items-center justify-center text-2xl flex-shrink-0">
+                    👨‍⚕️
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800">{nextApp.doctorName}</h4>
+                    <p className="text-xs text-slate-400">Chief Specialist • MD</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 rounded-full bg-primary-50 border border-primary-100 text-xs font-semibold text-primary-600 flex items-center gap-1.5">
+                    <Calendar size={12} /> {new Date(nextApp.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-xs font-semibold text-teal-600 flex items-center gap-1.5">
+                    <Clock size={12} /> {nextApp.time}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600">
+                <div>
+                  <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Reason for Visit</span>
+                  <span className="font-semibold text-slate-800">{nextApp.reason || "Routine Checkup"}</span>
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-800">Dr. Ajith Madhav</h4>
-                  <p className="text-xs text-slate-400">Chief Surgeon • Prosthodontist</p>
+                  <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Status</span>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                    nextApp.status === "CONFIRMED" 
+                      ? "bg-green-50 text-green-700" 
+                      : nextApp.status === "PENDING"
+                      ? "bg-yellow-50 text-yellow-700"
+                      : "bg-slate-100 text-slate-700"
+                  }`}>
+                    {nextApp.status.charAt(0) + nextApp.status.slice(1).toLowerCase()}
+                  </span>
+                </div>
+                <div>
+                  <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Location</span>
+                  <span className="font-semibold text-slate-800">Suite 3 (OPD Lounge)</span>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 rounded-full bg-primary-50 border border-primary-100 text-xs font-semibold text-primary-600 flex items-center gap-1.5">
-                  <Calendar size={12} /> July 12, 2026
-                </span>
-                <span className="px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-xs font-semibold text-teal-600 flex items-center gap-1.5">
-                  <Clock size={12} /> 10:30 AM
-                </span>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600">
-              <div>
-                <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Treatment Type</span>
-                <span className="font-semibold text-slate-800">Dental Implants</span>
+              <div className="flex gap-3 pt-2">
+                <Link href="/portal/appointments" className="flex-1 text-center py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-sm font-semibold text-slate-700">
+                  Reschedule / Cancel
+                </Link>
+                <a href="https://wa.me/919567400562" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold shadow-md shadow-primary-600/10 transition-all">
+                  Contact Desk
+                </a>
               </div>
-              <div>
-                <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Status</span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700">
-                  Confirmed
-                </span>
-              </div>
-              <div>
-                <span className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Room No</span>
-                <span className="font-semibold text-slate-800">Suite 3 (Aesthetic Lounge)</span>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <Link href="/portal/appointments" className="flex-1 text-center py-3 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-sm font-semibold text-slate-700">
-                Reschedule / Cancel
+            </motion.div>
+          ) : (
+            <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm text-center py-10 space-y-4">
+              <span className="text-4xl block">🗓️</span>
+              <h4 className="text-lg font-bold text-slate-800">No Upcoming Appointment</h4>
+              <p className="text-sm text-slate-400 max-w-sm mx-auto">You do not have any appointments scheduled at the moment. Keep your smile bright and healthy!</p>
+              <Link href="/portal/appointments" className="inline-block px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold transition-all shadow-md">
+                Schedule Appointment Now
               </Link>
-              <a href="https://wa.me/919567400562" target="_blank" rel="noopener noreferrer" className="flex-1 text-center py-3 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold shadow-md shadow-primary-600/10 transition-all">
-                Contact Desk
-              </a>
             </div>
-          </motion.div>
+          )}
         </div>
 
         {/* Quick Actions Panel */}
