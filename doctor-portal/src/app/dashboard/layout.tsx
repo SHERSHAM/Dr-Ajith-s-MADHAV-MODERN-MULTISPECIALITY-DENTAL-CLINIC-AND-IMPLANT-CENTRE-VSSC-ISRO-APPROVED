@@ -14,7 +14,7 @@ import {
   Stethoscope,
   HeartPulse
 } from "lucide-react";
-import FloatingParticles from "../../components/animations/FloatingParticles";
+import ThreeBackground from "../../components/animations/ThreeBackground";
 import MouseGlow from "../../components/animations/MouseGlow";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -75,8 +75,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="absolute top-[-30%] left-[-20%] w-[70%] h-[70%] rounded-full bg-primary-900/10 blur-[130px] pointer-events-none z-0" />
       <div className="absolute bottom-[-30%] right-[-20%] w-[70%] h-[70%] rounded-full bg-teal-900/10 blur-[130px] pointer-events-none z-0" />
       
-      {/* Dynamic particles and mouse follows */}
-      <FloatingParticles count={25} />
+      {/* Dynamic 3D particles and mouse follows */}
+      <ThreeBackground />
       <MouseGlow />
 
       {/* Sidebar Navigation */}
