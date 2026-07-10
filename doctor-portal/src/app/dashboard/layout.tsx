@@ -9,14 +9,13 @@ import {
   Users, 
   FileText, 
   LogOut, 
-  Activity, 
   Menu, 
   X,
   Stethoscope,
-  HeartPulse,
-  Sun,
-  Moon
+  HeartPulse
 } from "lucide-react";
+import FloatingParticles from "../../components/animations/FloatingParticles";
+import MouseGlow from "../../components/animations/MouseGlow";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -24,7 +23,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [doctor, setDoctor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
   // Authenticate session on mount
   useEffect(() => {
@@ -62,21 +60,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-600">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary-500 border-t-transparent mx-auto" />
-          <p className="text-sm font-semibold mt-3">Verifying credentials...</p>
+          <p className="text-sm font-semibold mt-3 text-slate-300">Verifying credentials...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen flex bg-slate-50 ${darkMode ? "dark" : ""}`}>
+    <div className="min-h-screen flex bg-slate-950 text-slate-100 font-sans antialiased relative overflow-hidden">
+      {/* Background visual components */}
+      <div className="absolute top-[-30%] left-[-20%] w-[70%] h-[70%] rounded-full bg-primary-900/10 blur-[130px] pointer-events-none z-0" />
+      <div className="absolute bottom-[-30%] right-[-20%] w-[70%] h-[70%] rounded-full bg-teal-900/10 blur-[130px] pointer-events-none z-0" />
+      
+      {/* Dynamic particles and mouse follows */}
+      <FloatingParticles count={25} />
+      <MouseGlow />
+
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-100 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col border-r border-slate-800`}>
+      <aside className={`fixed inset-y-0 left-0 w-64 bg-slate-900/30 border-r border-slate-800/80 backdrop-blur-xl text-slate-100 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col z-30`}>
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center gap-2 px-6 border-b border-slate-800 bg-slate-950/60">
+        <div className="h-16 flex items-center gap-2 px-6 border-b border-slate-800/80 bg-slate-950/60">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-teal-400 flex items-center justify-center">
             <Stethoscope size={16} className="text-white" />
           </div>
@@ -98,8 +104,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-all ${
                   isActive 
-                    ? "bg-primary-600 text-white shadow-md shadow-primary-600/10" 
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                    ? "bg-primary-600/90 text-white shadow-lg shadow-primary-600/20" 
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
                 }`}
               >
                 <Icon size={18} /> {item.name}
@@ -135,41 +141,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 md:pl-64 flex flex-col min-h-screen">
+      <div className="flex-1 md:pl-64 flex flex-col min-h-screen relative z-10">
         {/* Main Header bar */}
-        <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
+        <header className="h-16 bg-slate-950/60 border-b border-slate-900/80 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between px-6 shadow-sm">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg"
+              className="md:hidden p-2 text-slate-400 hover:bg-slate-900 rounded-lg"
             >
               {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
 
             {doctor && (
-              <div className="hidden sm:block">
-                <h3 className="font-heading font-bold text-slate-800 text-sm md:text-base leading-none">{doctor.name}</h3>
-                <p className="text-xs text-slate-400 mt-1">{doctor.doctorTitle || "Practice Surgeon"}</p>
+              <div>
+                <h3 className="font-heading font-bold text-white text-sm md:text-base leading-none">{doctor.name}</h3>
+                <p className="text-[10px] text-slate-400 mt-1">{doctor.doctorTitle || "Practice Surgeon"}</p>
               </div>
             )}
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1 rounded-full font-semibold">
+            <div className="flex items-center gap-1.5 text-xs text-teal-400 bg-teal-950/40 border border-teal-800/30 px-3 py-1 rounded-full font-semibold">
               <HeartPulse size={12} className="animate-pulse" /> Clinic Active
             </div>
-            
-            <button 
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl"
-            >
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
           </div>
         </header>
 
         {/* Main Viewport Content */}
-        <main className="flex-1 p-6 md:p-8 bg-slate-50/50">
+        <main className="flex-1 p-6 md:p-8 bg-transparent">
           {children}
         </main>
       </div>
